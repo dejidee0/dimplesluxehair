@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Disallow admin and private pages
+Disallow: /admin
+Disallow: /account
+Disallow: /checkout
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://dimplesluxe.com/sitemap.xml
