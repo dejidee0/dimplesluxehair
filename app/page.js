@@ -19,6 +19,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Hero from "./components/Hero";
 import ProductCard from "./components/ProductCard";
+import ClientMediaStory from "./components/ClientMediaStory";
 import { supabase } from "../lib/supabase";
 import toast from "react-hot-toast";
 
@@ -347,6 +348,9 @@ export default function HomePage() {
             )}
           </div>
         </section>
+
+        {/* Client-supplied real stock, motion and feather-crochet education */}
+        <ClientMediaStory />
 
         {/* Why Choose Dimplesluxe (200+ Happy Customers) */}
         <section className="bg-black py-20 text-white sm:py-28">
