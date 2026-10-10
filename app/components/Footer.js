@@ -16,7 +16,7 @@ const shopLinks = [
 
 export default function Footer() {
   return (
-    <footer className="bg-black text-white">
+    <footer className="relative overflow-hidden bg-black text-white">
       <div className="border-b border-white/15">
         <div className="luxe-shell flex flex-col gap-6 py-10 sm:flex-row sm:items-center sm:justify-between">
           <p className="max-w-3xl text-[clamp(2.4rem,6vw,5.7rem)] font-black uppercase leading-[.86] tracking-[-0.075em]">Your next look<br /><span className="text-[#ff1783]">starts here.</span></p>
@@ -55,7 +55,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="border-t border-white/15">
-        <div className="luxe-shell flex flex-col gap-2 py-5 text-[0.58rem] font-bold uppercase tracking-[0.16em] text-white/38 sm:flex-row sm:items-center sm:justify-between">
+        <div className="luxe-shell flex flex-col gap-2 pt-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] text-[0.58rem] font-bold uppercase tracking-[0.16em] text-white/38 sm:flex-row sm:items-center sm:justify-between">
           <span>© {new Date().getFullYear()} Dimplesluxe</span><span>Premium hair / Unapologetic energy</span>
         </div>
       </div>

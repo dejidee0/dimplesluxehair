@@ -251,13 +251,13 @@ export default function ProductsPage() {
         </section>
 
         {/* Filter Navigation Bar */}
-        <section className="border-b border-black/10 bg-[#f7f7f7] py-6">
-          <div className="luxe-shell space-y-4">
+        <section className="border-b border-black/10 bg-[#f7f7f7] py-4 sm:py-6">
+          <div className="luxe-shell space-y-3 sm:space-y-4">
             {/* Primary Category Tabs */}
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2" aria-label="Product categories">
               <button
                 onClick={() => selectCategory("")}
-                className={`px-4 py-2 text-[0.62rem] font-black uppercase tracking-[0.14em] transition ${
+                className={`min-h-10 px-3 py-2 text-[0.58rem] font-black uppercase tracking-[0.1em] transition sm:px-4 sm:text-[0.62rem] sm:tracking-[0.14em] ${
                   !categorySlug
                     ? "bg-[#ff1783] text-black shadow-sm"
                     : "border border-black/15 bg-white text-black hover:border-black"
@@ -269,7 +269,7 @@ export default function ProductsPage() {
                 <button
                   key={cat.id}
                   onClick={() => selectCategory(cat.slug)}
-                  className={`px-4 py-2 text-[0.62rem] font-black uppercase tracking-[0.14em] transition ${
+                  className={`min-h-10 px-3 py-2 text-[0.58rem] font-black uppercase tracking-[0.1em] transition sm:px-4 sm:text-[0.62rem] sm:tracking-[0.14em] ${
                     activeParentCategory?.slug === cat.slug
                       ? "bg-[#ff1783] text-black shadow-sm"
                       : "border border-black/15 bg-white text-black hover:border-black"
@@ -282,13 +282,13 @@ export default function ProductsPage() {
 
             {/* Subcategory Secondary Tabs (Shown when Synthetics or Kinky Hair is active) */}
             {subcategoriesForParent.length > 0 && (
-              <div className="flex flex-wrap items-center gap-2 border-t border-black/10 pt-3">
-                <span className="text-[0.58rem] font-black uppercase tracking-[0.18em] text-black/50">
+              <div className="flex flex-wrap items-center gap-1.5 border-t border-black/10 pt-3 sm:gap-2">
+                <span className="mr-1 w-full text-[0.56rem] font-black uppercase tracking-[0.16em] text-black/50 sm:w-auto">
                   Sub-categories:
                 </span>
                 <button
                   onClick={() => selectCategory(activeParentCategory.slug)}
-                  className={`px-3 py-1.5 text-[0.58rem] font-black uppercase tracking-[0.12em] transition ${
+                  className={`min-h-9 px-3 py-1.5 text-[0.56rem] font-black uppercase tracking-[0.09em] transition sm:text-[0.58rem] sm:tracking-[0.12em] ${
                     categorySlug === activeParentCategory.slug
                       ? "bg-black text-white"
                       : "border border-black/15 bg-white text-black hover:border-black"
@@ -300,7 +300,7 @@ export default function ProductsPage() {
                   <button
                     key={sub.id}
                     onClick={() => selectCategory(sub.slug)}
-                    className={`px-3 py-1.5 text-[0.58rem] font-black uppercase tracking-[0.12em] transition ${
+                    className={`min-h-9 px-3 py-1.5 text-[0.56rem] font-black uppercase tracking-[0.09em] transition sm:text-[0.58rem] sm:tracking-[0.12em] ${
                       categorySlug === sub.slug
                         ? "bg-black text-[#ff1783]"
                         : "border border-black/15 bg-white text-black hover:border-black"
@@ -313,19 +313,19 @@ export default function ProductsPage() {
             )}
 
             {/* Refine by Texture & Sort */}
-            <div className="flex flex-col gap-4 pt-2 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                <span className="inline-flex items-center gap-1.5 text-[0.6rem] font-black uppercase tracking-[0.14em] text-black/50">
+            <div className="flex flex-col gap-3 border-t border-black/10 pt-3 sm:flex-row sm:items-center sm:justify-between sm:border-0 sm:pt-2">
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-x-3 sm:gap-y-2" aria-label="Texture filters">
+                <span className="mr-1 inline-flex items-center gap-1.5 text-[0.58rem] font-black uppercase tracking-[0.12em] text-black/50">
                   <SlidersHorizontal size={13} /> Texture:
                 </span>
                 {textureOptions.map((opt) => (
                   <button
                     key={opt}
                     onClick={() => selectTexture(opt)}
-                    className={`text-xs transition ${
+                    className={`min-h-9 rounded-full border px-3 py-1.5 text-[0.7rem] transition ${
                       (opt === "All textures" && !texture) || texture === opt
-                        ? "font-black text-[#ff1783] underline underline-offset-4"
-                        : "font-semibold text-black/60 hover:text-black"
+                        ? "border-black bg-black font-black text-white"
+                        : "border-black/10 bg-white font-semibold text-black/60 hover:border-black/30 hover:text-black"
                     }`}
                   >
                     {opt}
@@ -333,14 +333,14 @@ export default function ProductsPage() {
                 ))}
               </div>
 
-              <div className="flex items-center gap-3">
-                <label className="flex items-center gap-2 text-[0.62rem] font-black uppercase tracking-[0.12em] text-black/60">
+              <div className="flex items-center gap-3 sm:shrink-0">
+                <label className="flex w-full items-center justify-between gap-2 text-[0.62rem] font-black uppercase tracking-[0.12em] text-black/60 sm:w-auto sm:justify-start">
                   Sort:
                   <span className="relative">
                     <select
                       value={sort}
                       onChange={(e) => setSort(e.target.value)}
-                      className="appearance-none border-b-2 border-black bg-transparent py-1 pr-6 text-xs font-black uppercase text-black outline-none"
+                      className="min-h-10 appearance-none border border-black/15 bg-white px-3 py-1 pr-8 text-[0.68rem] font-black uppercase text-black outline-none focus:border-[#ff1783] sm:border-x-0 sm:border-t-0 sm:border-b-2 sm:bg-transparent sm:px-0 sm:pr-6"
                     >
                       <option value="newest">Newest drops</option>
                       <option value="price-low">Price: low to high</option>

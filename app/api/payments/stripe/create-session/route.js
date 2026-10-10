@@ -108,6 +108,7 @@ export async function POST(request) {
         orderNumber: String(orderData.orderNumber),
         customerName: String(orderData.customerName || "Customer").slice(0, 120),
         paymentMethod: "stripe_checkout",
+        preferredPaymentMethod: String(orderData.paymentMethod || "card").slice(0, 40),
         shippingMethod: String(orderData.shippingMethod || "standard").slice(0, 40),
         source: "dimplesluxe_website",
       },

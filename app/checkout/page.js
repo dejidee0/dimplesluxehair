@@ -13,13 +13,16 @@ import {
   AlertCircle,
   ShoppingBag,
   Package,
+  Smartphone,
   Truck,
+  WalletCards,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCartStore, useAuthStore } from "../../lib/store";
 import { formatPrice } from "../../lib/currency";
 import { supabase } from "../../lib/supabase";
 import { createStripeCheckoutSession } from "../../lib/payments/stripe";
+import { getProductImage, getRealisticFallback } from "../../lib/productImage";
 import toast from "react-hot-toast";
 
 export default function CheckoutPage() {
@@ -91,11 +94,29 @@ export default function CheckoutPage() {
     const methods = [
       {
         id: "card",
-        name: "Secure Stripe checkout",
-        description: "Cards and eligible wallets are shown securely by Stripe",
+        name: "Credit / Debit Card",
+        description: "Visa, Mastercard and American Express",
         icon: CreditCard,
         currencies: ["GBP"],
         color: "bg-slate-700",
+      },
+      {
+        id: "apple_pay",
+        name: "Apple Pay",
+        description: "Fast checkout on an eligible Apple device",
+        icon: Smartphone,
+        currencies: ["GBP"],
+        color: "bg-black",
+        note: "When eligible",
+      },
+      {
+        id: "paypal",
+        name: "PayPal",
+        description: "Pay securely with your PayPal account",
+        icon: WalletCards,
+        currencies: ["GBP"],
+        color: "bg-[#4b5563]",
+        note: "When enabled",
       },
     ];
 
@@ -149,7 +170,7 @@ export default function CheckoutPage() {
       setCurrentStep((prev) => Math.min(4, prev + 1));
       // Scroll to top on mobile
       if (window.innerWidth < 768) {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.scrollTo({ top: 104, behavior: "auto" });
       }
     }
   };
@@ -158,7 +179,7 @@ export default function CheckoutPage() {
     setCurrentStep((prev) => Math.max(1, prev - 1));
     // Scroll to top on mobile
     if (window.innerWidth < 768) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 104, behavior: "auto" });
     }
   };
 
@@ -930,7 +951,7 @@ function PaymentStep({ formData, handleInputChange, availablePaymentMethods }) {
           </span>
         </div>
         <p className="text-sm text-pink-800">
-          All payment methods are processed securely through Stripe.
+          Continue to Stripe to complete payment with any method eligible for your device and location.
         </p>
       </div>
 
@@ -940,7 +961,7 @@ function PaymentStep({ formData, handleInputChange, availablePaymentMethods }) {
           return (
             <label
               key={method.id}
-              className="flex items-start p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-all duration-200 hover:border-pink-200"
+              className={`flex cursor-pointer items-start rounded-xl border-2 p-4 transition-colors duration-200 hover:border-pink-200 hover:bg-gray-50 ${formData.paymentMethod === method.id ? "border-pink-500 bg-pink-50/40" : "border-gray-200"}`}
             >
               <input
                 type="radio"
@@ -966,6 +987,11 @@ function PaymentStep({ formData, handleInputChange, availablePaymentMethods }) {
                     <div className="text-sm text-gray-600 mt-1">
                       {method.description}
                     </div>
+                    {method.note && (
+                      <span className="mt-2 inline-flex rounded-full bg-gray-100 px-2 py-1 text-[0.62rem] font-bold uppercase tracking-[0.08em] text-gray-500">
+                        {method.note}
+                      </span>
+                    )}
                   </div>
                   {formData.paymentMethod === method.id && (
                     <div className="w-2 h-2 bg-pink-500 rounded-full mt-2 sm:mt-1 flex-shrink-0"></div>
@@ -981,10 +1007,33 @@ function PaymentStep({ formData, handleInputChange, availablePaymentMethods }) {
         <Lock className="w-5 h-5 flex-shrink-0 text-gray-500 mt-0.5" />
         <span>
           Your payment information is encrypted and secure. We never store your
-          card details.
+          card details. Apple Pay and PayPal are displayed by Stripe only when
+          they are enabled and eligible for the customer.
         </span>
       </div>
     </div>
+  );
+}
+
+function CheckoutProductImage({ item, sizes }) {
+  const fallback = getRealisticFallback(item);
+  const [source, setSource] = useState(() => getProductImage(item));
+
+  useEffect(() => {
+    setSource(getProductImage(item));
+  }, [item]);
+
+  return (
+    <Image
+      src={source}
+      alt={item.name || "Dimplesluxe hair product"}
+      fill
+      sizes={sizes}
+      className="object-cover"
+      onError={() => {
+        if (source !== fallback) setSource(fallback);
+      }}
+    />
   );
 }
 
@@ -1004,17 +1053,8 @@ function MobileOrderSummary({
       <div className="space-y-3 mb-4">
         {items.map((item) => (
           <div key={item.id} className="flex items-center space-x-3">
-            <div className="w-12 h-12 relative rounded-lg overflow-hidden flex-shrink-0">
-              <Image
-                src={
-                  item.images?.[0] ||
-                  "https://images.pexels.com/photos/3992656/pexels-photo-3992656.jpeg?auto=compress&cs=tinysrgb&w=800"
-                }
-                alt={item.name}
-                fill
-                sizes="48px"
-                className="object-cover"
-              />
+            <div className="w-12 h-12 relative rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
+              <CheckoutProductImage item={item} sizes="48px" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="text-sm font-medium text-gray-900 truncate">
@@ -1072,17 +1112,8 @@ function DesktopOrderSummary({
       <div className="space-y-4 mb-6">
         {items.map((item) => (
           <div key={item.id} className="flex items-center space-x-4">
-            <div className="w-16 h-16 relative rounded-lg overflow-hidden flex-shrink-0">
-              <Image
-                src={
-                  item.images?.[0] ||
-                  "https://images.pexels.com/photos/3992656/pexels-photo-3992656.jpeg?auto=compress&cs=tinysrgb&w=800"
-                }
-                alt={item.name}
-                fill
-                sizes="64px"
-                className="object-cover"
-              />
+            <div className="w-16 h-16 relative rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
+              <CheckoutProductImage item={item} sizes="64px" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="text-base font-semibold text-gray-900 truncate">
