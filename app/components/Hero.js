@@ -75,7 +75,7 @@ export default function Hero() {
 
   return (
     <section
-      className={`dl-hero relative isolate min-h-[720px] overflow-hidden lg:min-h-[calc(100vh-104px)] ${slide.light ? "bg-[#efefef] text-black" : "bg-black text-white"}`}
+      className={`dl-hero relative isolate h-[720px] overflow-hidden lg:h-[calc(100svh-104px)] lg:min-h-[720px] ${slide.light ? "bg-[#efefef] text-black" : "bg-black text-white"}`}
       onPointerMove={moveDepth}
       onPointerEnter={() => setPaused(true)}
       onPointerLeave={resetDepth}
@@ -105,30 +105,32 @@ export default function Hero() {
         <div className="absolute inset-12 rounded-full bg-[#ff1783]/10 shadow-[0_0_70px_rgba(255,23,131,.45)] backdrop-blur-sm" />
       </motion.div>
 
-      <div className="luxe-shell relative flex min-h-[720px] flex-col justify-between py-8 lg:min-h-[calc(100vh-104px)] lg:py-10">
+      <div className="luxe-shell relative flex h-full flex-col py-8 lg:py-10">
         <div className={`flex items-center gap-3 text-[0.6rem] font-black uppercase tracking-[0.24em] ${slide.light ? "text-black" : "text-white"}`}>
           <span className="h-2.5 w-2.5 bg-[#ff1783]" />
           100% virgin human hair / UK — Worldwide
         </div>
 
-        <AnimatePresence mode="sync" initial={false}>
-          <motion.div
-            key={active}
-            initial={{ opacity: 0, y: 28, filter: "blur(8px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            exit={{ opacity: 0, y: -18, filter: "blur(6px)" }}
-            transition={{ duration: 0.58, ease: [0.2, 0.7, 0.2, 1] }}
-            className={`relative z-10 max-w-[800px] pb-32 pt-24 sm:pb-28 ${slide.align === "right" ? "ml-auto text-right" : ""}`}
-          >
-            <p className="mb-5 text-[0.65rem] font-black uppercase tracking-[0.23em] text-[#f51578] sm:text-xs">{slide.kicker}</p>
-            <h1 className="dl-hero-title text-[clamp(2.85rem,12vw,4.2rem)] sm:text-[clamp(4.9rem,8.7vw,9.4rem)]">{slide.title}</h1>
-            <p className={`mt-7 max-w-lg text-sm font-semibold leading-6 sm:text-base sm:leading-7 ${slide.align === "right" ? "ml-auto" : ""} ${slide.light ? "text-black/66" : "text-white/74"}`}>{slide.copy}</p>
-            <div className={`mt-8 flex flex-col gap-3 sm:flex-row ${slide.align === "right" ? "sm:justify-end" : ""}`}>
-              <Link href={slide.primary.href} className="luxe-button-pink">{slide.primary.label} <ArrowUpRight size={17} /></Link>
-              <Link href={slide.secondary.href} className={slide.light ? "luxe-button-outline-dark" : "luxe-button-glass"}>{slide.secondary.label} <ArrowRight size={17} /></Link>
-            </div>
-          </motion.div>
-        </AnimatePresence>
+        <div className="relative z-10 flex min-h-0 flex-1 items-center pb-24 pt-4 sm:pb-20">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={active}
+              initial={{ opacity: 0, y: 22, filter: "blur(7px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, y: -14, filter: "blur(5px)" }}
+              transition={{ duration: 0.5, ease: [0.2, 0.7, 0.2, 1] }}
+              className={`w-full max-w-[800px] ${slide.align === "right" ? "ml-auto text-right" : ""}`}
+            >
+              <p className="mb-5 text-[0.65rem] font-black uppercase tracking-[0.23em] text-[#f51578] sm:text-xs">{slide.kicker}</p>
+              <h1 className="dl-hero-title text-[clamp(2.85rem,12vw,4.2rem)] sm:text-[clamp(4.9rem,8.7vw,9.4rem)]">{slide.title}</h1>
+              <p className={`mt-7 max-w-lg text-sm font-semibold leading-6 sm:text-base sm:leading-7 ${slide.align === "right" ? "ml-auto" : ""} ${slide.light ? "text-black/66" : "text-white/74"}`}>{slide.copy}</p>
+              <div className={`mt-8 flex flex-col gap-3 sm:flex-row ${slide.align === "right" ? "sm:justify-end" : ""}`}>
+                <Link href={slide.primary.href} className="luxe-button-pink">{slide.primary.label} <ArrowUpRight size={17} /></Link>
+                <Link href={slide.secondary.href} className={slide.light ? "luxe-button-outline-dark" : "luxe-button-glass"}>{slide.secondary.label} <ArrowRight size={17} /></Link>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
         <div className={`absolute bottom-6 left-0 right-0 z-20 flex items-end justify-between gap-5 ${slide.light ? "text-black" : "text-white"}`}>
           <div className="flex min-w-0 flex-1 gap-2 sm:gap-4">

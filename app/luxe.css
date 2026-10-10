@@ -131,6 +131,7 @@ body { background: var(--paper); color: var(--ink); }
 .dl-nav-link { position: relative; }
 .dl-nav-link::after { background: var(--signal); bottom: -8px; content: ""; height: 2px; left: 0; position: absolute; transform: scaleX(0); transform-origin: right; transition: transform 220ms ease; width: 100%; }
 .dl-nav-link:hover::after { transform: scaleX(1); transform-origin: left; }
+.dl-hero { contain: layout paint; overflow-anchor: none; }
 .dl-hero-title { font-weight: 900; letter-spacing: -0.085em; line-height: .76; text-transform: uppercase; text-wrap: balance; }
 .dl-hero-noise { background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.12'/%3E%3C/svg%3E"); mix-blend-mode: soft-light; pointer-events: none; }
 .dl-hero-depth { perspective: 900px; transform-style: preserve-3d; }
