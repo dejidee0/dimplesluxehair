@@ -19,6 +19,7 @@ const ProductsManagement = ({
   onAddProduct,
   onUpdateProduct,
   onDeleteProduct,
+  onCreateCategory,
   categories = [],
   supabase,
 }) => {
@@ -201,6 +202,7 @@ const ProductsManagement = ({
           uploadingImages={productForm.uploadingImages}
           uploadingVideos={productForm.uploadingVideos}
           categories={categories}
+          onCreateCategory={onCreateCategory}
           onInputChange={productForm.handleInputChange}
           onArrayInputChange={productForm.handleArrayInputChange}
           onMediaChange={productForm.handleMediaChange}

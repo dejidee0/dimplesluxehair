@@ -1,5 +1,5 @@
 // ProductForm.jsx
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import {
   Package,
   DollarSign,
@@ -18,6 +18,7 @@ const ProductForm = ({
   uploadingImages,
   uploadingVideos,
   categories,
+  onCreateCategory,
   onInputChange,
   onArrayInputChange,
   onMediaChange,
@@ -29,6 +30,10 @@ const ProductForm = ({
   isEditing,
 }) => {
   const firstInputRef = useRef(null);
+  const [showAddCategory, setShowAddCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [categoryError, setCategoryError] = useState("");
+  const [isCreatingCategory, setIsCreatingCategory] = useState(false);
 
   useEffect(() => {
     if (firstInputRef.current) {
@@ -39,6 +44,30 @@ const ProductForm = ({
   const activeCategories = categories.filter((cat) => cat.is_active !== false);
   const getSubcategories = (parentId) =>
     activeCategories.filter((cat) => cat.parent_id === parentId);
+
+  const handleCreateCategory = async (event) => {
+    event.preventDefault();
+    const name = newCategoryName.trim();
+    if (!name) {
+      setCategoryError("Enter a category name.");
+      return;
+    }
+
+    setIsCreatingCategory(true);
+    setCategoryError("");
+    try {
+      const category = await onCreateCategory(name);
+      onInputChange({
+        target: { name: "category_id", value: category.id, type: "text" },
+      });
+      setNewCategoryName("");
+      setShowAddCategory(false);
+    } catch (error) {
+      setCategoryError(error.message || "Unable to add category.");
+    } finally {
+      setIsCreatingCategory(false);
+    }
+  };
 
   return (
     <form onSubmit={onSubmit} className="space-y-6">
@@ -298,6 +327,51 @@ const ProductForm = ({
                 <AlertCircle className="w-3 h-3" />
                 <span>{errors.category_id}</span>
               </p>
+            )}
+            <button
+              type="button"
+              onClick={() => {
+                setCategoryError("");
+                setShowAddCategory((visible) => !visible);
+              }}
+              className="mt-2 text-sm font-medium text-pink-600 hover:text-pink-700"
+            >
+              {showAddCategory ? "Cancel" : "+ Add category"}
+            </button>
+            {showAddCategory && (
+              <div className="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-3">
+                <label
+                  htmlFor="new_category_name"
+                  className="mb-2 block text-sm font-medium text-gray-700"
+                >
+                  New category name
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    id="new_category_name"
+                    type="text"
+                    value={newCategoryName}
+                    onChange={(event) => setNewCategoryName(event.target.value)}
+                    maxLength={80}
+                    className="min-w-0 flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-pink-500"
+                    placeholder="e.g. Crochet Hair"
+                    disabled={isCreatingCategory}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleCreateCategory}
+                    disabled={isCreatingCategory || !onCreateCategory}
+                    className="rounded-lg bg-pink-600 px-3 py-2 text-sm font-medium text-white hover:bg-pink-700 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {isCreatingCategory ? "Adding..." : "Add"}
+                  </button>
+                </div>
+                {categoryError && (
+                  <p role="alert" className="mt-2 text-xs text-red-600">
+                    {categoryError}
+                  </p>
+                )}
+              </div>
             )}
           </div>
 

@@ -114,6 +114,40 @@ export default function AdminPage() {
     }
   };
 
+  const handleCreateCategory = async (name) => {
+    const { data: sessionData, error: sessionError } =
+      await supabase.auth.getSession();
+    if (sessionError) throw sessionError;
+    if (!sessionData.session?.access_token) {
+      throw new Error("Please sign in again before adding a category.");
+    }
+
+    const response = await fetch("/api/admin/categories", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionData.session.access_token}`,
+      },
+      body: JSON.stringify({ name }),
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.error || "Unable to add category.");
+    }
+
+    setCategories((currentCategories) => {
+      if (
+        currentCategories.some(
+          (category) => category.id === result.category.id
+        )
+      ) {
+        return currentCategories;
+      }
+      return [...currentCategories, result.category];
+    });
+    return result.category;
+  };
+
   // Show loading state only during initial auth check
   if (!authChecked || (!initialized && !authLoading)) {
     return (
@@ -230,6 +264,7 @@ export default function AdminPage() {
             onAddProduct={handleAddProduct}
             onDeleteProduct={handleDeleteProduct}
             onUpdateProduct={handleUpdateProduct}
+            onCreateCategory={handleCreateCategory}
             onFetchCategories={fetchCategories}
           />
         );
