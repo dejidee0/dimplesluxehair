@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowUpRight, Instagram } from "lucide-react";
 
 const shopLinks = [
@@ -25,7 +26,13 @@ export default function Footer() {
       </div>
       <div className="luxe-shell grid gap-12 py-12 md:grid-cols-2 lg:grid-cols-[1.4fr_.6fr_.6fr_.7fr]">
         <div>
-          <p className="text-3xl font-black uppercase tracking-[-0.075em]">Dimples<span className="text-[#ff1783]">luxe</span></p>
+          <Image
+            src="/images/dimplesluxe-logo-light.png"
+            alt="Dimplesluxe — The Hair Destination"
+            width={708}
+            height={135}
+            className="h-auto w-[220px] max-w-full"
+          />
           <p className="mt-5 max-w-sm text-sm leading-6 text-white/55">Premium human hair, high-impact texture and a better way to find the look that feels like you.</p>
           <a href="mailto:dimplesluxe@gmail.com" className="mt-7 inline-flex border-b border-[#ff1783] pb-1 text-sm font-semibold transition hover:text-[#ff1783]">dimplesluxe@gmail.com</a>
         </div>

@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, MoveRight, Play } from "lucide-react";
+import { ArrowUpRight, MoveRight } from "lucide-react";
 
 const stockTiles = [
   {
@@ -20,12 +20,6 @@ const stockTiles = [
     src: "/images/client-media/body-wave-closure.jpg",
     alt: "Body wave lace closure showing the lace base and curl pattern",
     label: "Closures",
-  },
-  {
-    src: "/images/client-media/brand-archive.jpg",
-    alt: "Original Dimplesluxe Hair That Holds Its Own brand artwork",
-    label: "From the archive",
-    archive: true,
   },
 ];
 
@@ -49,23 +43,51 @@ const crochetNotes = [
 
 export default function ClientMediaStory() {
   const videoRef = useRef(null);
+  const playbackBlockedRef = useRef(false);
+  const [playbackBlocked, setPlaybackBlocked] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
-    const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (!video) return undefined;
 
-    const syncPlayback = () => {
-      if (!video) return;
-      if (motionPreference.matches) {
-        video.pause();
-      } else {
-        video.play().catch(() => {});
+    const startPlayback = () => {
+      if (
+        document.visibilityState !== "visible" ||
+        playbackBlockedRef.current
+      ) {
+        return;
       }
+
+      video.play().then(
+        () => {
+          playbackBlockedRef.current = false;
+          setPlaybackBlocked(false);
+        },
+        (error) => {
+          if (error.name === "NotAllowedError") {
+            playbackBlockedRef.current = true;
+            setPlaybackBlocked(true);
+          } else if (error.name !== "AbortError") {
+            console.error("Hair story video could not start:", error);
+          }
+        }
+      );
     };
 
-    syncPlayback();
-    motionPreference.addEventListener?.("change", syncPlayback);
-    return () => motionPreference.removeEventListener?.("change", syncPlayback);
+    video.addEventListener("canplay", startPlayback);
+    video.addEventListener("ended", startPlayback);
+    video.addEventListener("pause", startPlayback);
+    document.addEventListener("visibilitychange", startPlayback);
+    window.addEventListener("pageshow", startPlayback);
+    startPlayback();
+
+    return () => {
+      video.removeEventListener("canplay", startPlayback);
+      video.removeEventListener("ended", startPlayback);
+      video.removeEventListener("pause", startPlayback);
+      document.removeEventListener("visibilitychange", startPlayback);
+      window.removeEventListener("pageshow", startPlayback);
+    };
   }, []);
 
   return (
@@ -90,25 +112,35 @@ export default function ClientMediaStory() {
           </div>
 
           <div className="mt-8 grid gap-4 lg:grid-cols-[1.18fr_.82fr]">
-            <figure className="group relative min-h-[540px] overflow-hidden bg-[#151515] sm:min-h-[660px] lg:min-h-[760px]">
+            <figure className="group relative aspect-[4/5] min-h-0 overflow-hidden bg-[#151515] sm:aspect-[16/10] lg:aspect-auto lg:min-h-[760px]">
               <video
                 ref={videoRef}
+                autoPlay
                 muted
                 loop
                 playsInline
-                controls
-                preload="metadata"
+                preload="auto"
                 poster="/images/client-media/feather-crochet-finish.jpg"
                 className="absolute inset-0 h-full w-full object-cover"
                 aria-label="Dimplesluxe hair shown in motion"
+                onClick={() => videoRef.current?.play()}
               >
                 <source src="/images/client-media/real-hair-motion.mp4" type="video/mp4" />
               </video>
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/20" />
-              <div className="pointer-events-none absolute left-5 top-5 inline-flex items-center gap-2 rounded-full bg-white px-3 py-1.5 text-[0.58rem] font-black uppercase tracking-[0.13em] text-black">
-                <Play size={12} fill="currentColor" /> Hair in motion
+              <div className="pointer-events-none absolute left-5 top-5 inline-flex items-center rounded-full bg-white px-3 py-1.5 text-[0.58rem] font-black uppercase tracking-[0.13em] text-black">
+                Hair in motion
               </div>
-              <figcaption className="pointer-events-none absolute inset-x-0 bottom-12 flex items-end justify-between gap-5 p-5 sm:p-8">
+              {playbackBlocked && (
+                <button
+                  type="button"
+                  onClick={() => videoRef.current?.play()}
+                  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-5 py-3 text-xs font-black uppercase tracking-[0.12em] text-black"
+                >
+                  Tap to play
+                </button>
+              )}
+              <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-5 p-5 sm:p-8">
                 <div>
                   <p className="text-[0.6rem] font-black uppercase tracking-[0.2em] text-[#ff5da6]">Movement check</p>
                   <p className="mt-2 max-w-[12ch] text-[clamp(2rem,4vw,4.2rem)] font-black uppercase leading-[.88] tracking-[-0.06em]">Texture that speaks before you do.</p>
@@ -144,7 +176,7 @@ export default function ClientMediaStory() {
             </div>
           </div>
 
-          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
             {stockTiles.map((tile) => (
               <figure key={tile.src} className="group">
                 <div className="relative aspect-[4/5] overflow-hidden bg-[#181818]">
@@ -153,7 +185,7 @@ export default function ClientMediaStory() {
                     alt={tile.alt}
                     fill
                     sizes="(min-width: 1024px) 23vw, (min-width: 640px) 24vw, 46vw"
-                    className={`object-cover transition duration-700 group-hover:scale-[1.04] ${tile.archive ? "grayscale" : ""}`}
+                    className="object-cover transition duration-700 group-hover:scale-[1.04]"
                   />
                 </div>
                 <figcaption className="flex items-center justify-between border-t border-white/20 py-3 text-[0.58rem] font-black uppercase tracking-[0.15em] text-white/62">
@@ -181,8 +213,8 @@ export default function ClientMediaStory() {
           </div>
 
           <div className="mt-10 grid gap-4 lg:grid-cols-[.82fr_1.18fr]">
-            <figure className="group relative min-h-[560px] overflow-hidden bg-white lg:min-h-[760px]">
-              <Image src="/images/client-media/feather-crochet-finish.jpg" alt="Finished body wave feather crochet style beside the hair texture" fill sizes="(min-width: 1024px) 40vw, 92vw" className="object-cover transition duration-700 group-hover:scale-[1.025]" />
+            <figure className="group relative aspect-square self-start overflow-hidden border border-black/10 bg-white">
+              <Image src="/images/client-media/feather-crochet-finish.jpg" alt="Finished body wave feather crochet style beside the hair texture" fill sizes="(min-width: 1024px) 40vw, 92vw" className="object-contain transition duration-700 group-hover:scale-[1.015]" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/72 via-transparent to-transparent" />
               <figcaption className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-8">
                 <p className="text-[0.6rem] font-black uppercase tracking-[0.18em] text-[#ff5da6]">Finished look</p>

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ChevronDown, Menu, Search, ShoppingBag, UserRound, X } from "lucide-react";
 import { useCartStore, useAuthStore } from "../../lib/store";
 
@@ -92,9 +93,15 @@ export default function Navbar() {
             <Menu size={21} />
           </button>
 
-          <Link href="/" className="min-w-0 justify-self-center text-center leading-none lg:shrink-0 lg:justify-self-auto lg:text-left" aria-label="Dimplesluxe home">
-            <span className="block whitespace-nowrap text-[1.12rem] font-black uppercase tracking-[-0.075em] min-[360px]:text-[1.25rem] sm:text-[1.55rem]">Dimples<span className="text-[#f51578]">luxe</span></span>
-            <span className="mt-1 hidden text-[0.43rem] font-extrabold uppercase tracking-[0.38em] text-black/45 min-[360px]:block">The hair destination</span>
+          <Link href="/" className="min-w-0 justify-self-center lg:shrink-0 lg:justify-self-auto" aria-label="Dimplesluxe home">
+            <Image
+              src="/images/dimplesluxe-logo-dark.png"
+              alt="Dimplesluxe — The Hair Destination"
+              width={708}
+              height={135}
+              priority
+              className="h-auto w-[148px] min-[360px]:w-[164px] sm:w-[196px] lg:w-[210px]"
+            />
           </Link>
 
           <nav className="hidden items-center gap-5 xl:flex" aria-label="Primary navigation">
@@ -124,7 +131,13 @@ export default function Navbar() {
       {menuOpen && (
         <div id="mobile-navigation" className="fixed inset-0 z-[70] flex h-[100dvh] flex-col overflow-hidden bg-black text-white lg:hidden" role="dialog" aria-modal="true" aria-label="Main menu">
           <div className="flex h-[72px] shrink-0 items-center justify-between border-b border-white/15 px-4 sm:px-5">
-            <span className="text-[1.45rem] font-black uppercase tracking-[-0.075em]">Dimples<span className="text-[#ff1783]">luxe</span></span>
+            <Image
+              src="/images/dimplesluxe-logo-light.png"
+              alt="Dimplesluxe — The Hair Destination"
+              width={708}
+              height={135}
+              className="h-auto w-[190px]"
+            />
             <button ref={closeButtonRef} type="button" onClick={closeMenu} className="grid h-11 w-11 place-items-center rounded-full transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff1783]" aria-label="Close menu"><X size={21} /></button>
           </div>
 

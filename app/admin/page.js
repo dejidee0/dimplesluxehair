@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import { Menu, Bell, X } from "lucide-react";
 
 // Components
@@ -295,10 +296,13 @@ export default function AdminPage() {
             <Menu className="w-6 h-6 text-gray-600" />
           </button>
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-[#ff1783] text-black font-black text-sm flex items-center justify-center">
-              <span className="text-black font-black text-sm">D</span>
-            </div>
-            <span className="font-bold text-lg text-gray-900">Dimplesluxe</span>
+            <Image
+              src="/images/dimplesluxe-logo-dark.png"
+              alt="Dimplesluxe"
+              width={708}
+              height={135}
+              className="h-auto w-36"
+            />
           </div>
           <div className="flex items-center space-x-2">
             <button

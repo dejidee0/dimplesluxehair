@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { BarChart3, ShoppingCart, Package, Users, LogOut, ChevronRight } from "lucide-react";
 import { useAuthStore } from "../../../lib/store";
 import { useRouter } from "next/navigation";
@@ -25,9 +26,17 @@ const AdminSidebar = ({ activeTab, setActiveTab, tabs }) => {
   return (
     <div className="flex h-full flex-col border-r border-white/10 bg-black text-white">
       <div className="border-b border-white/10 p-6">
-        <div className="flex items-center gap-3">
-          <div className="grid h-11 w-11 place-items-center bg-[#ff1783] text-black"><BarChart3 className="h-5 w-5" /></div>
-          <div><h1 className="text-lg font-black uppercase tracking-[-0.04em]">Dimples<span className="text-[#ff1783]">luxe</span></h1><p className="text-[0.55rem] font-black uppercase tracking-[0.17em] text-white/38">Store command centre</p></div>
+        <div className="space-y-2">
+          <Image
+            src="/images/dimplesluxe-logo-light.png"
+            alt="Dimplesluxe — The Hair Destination"
+            width={708}
+            height={135}
+            className="h-auto w-48"
+          />
+          <p className="text-[0.55rem] font-black uppercase tracking-[0.17em] text-white/38">
+            Store command centre
+          </p>
         </div>
       </div>
 
